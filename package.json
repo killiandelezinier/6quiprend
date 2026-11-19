@@ -1,0 +1,16 @@
+{
+  "name": "sixieme-boeuf",
+  "version": "1.0.0",
+  "description": "Jeu de cartes multijoueur en temps réel : ne posez pas la sixième carte d'une rangée.",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "8.18.0"
+  }
+}
