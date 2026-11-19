@@ -286,4 +286,4 @@ setInterval(() => {
   }
 }, 25000);
 
-server.listen(PORT, () => console.log(`Sixième Bœuf prêt sur http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Sixième Bœuf démarré (port ${PORT}). Ouvrez l'adresse publique de votre hébergeur, ou http://localhost:${PORT} en local.`));
