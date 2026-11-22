@@ -30,7 +30,7 @@ button.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 2px
 button.mini{padding:4px 8px;font-size:12px;border-radius:8px}
 button:focus-visible,input:focus-visible,select:focus-visible,.card.pickable:focus-visible,.row.choosable:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 input,select{font-family:var(--body);font-size:15px;background:var(--felt-deep);color:var(--text);border:2px solid var(--felt-line);border-radius:10px;padding:8px 10px;min-width:0}
-.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.wrap{max-width:1520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:30px;letter-spacing:.5px;line-height:1}
 .logo svg{width:40px;height:40px;color:var(--sun)}
@@ -47,7 +47,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;fl
 .pl.me{background:rgba(255,178,46,.12)}
 .pl .dot{width:14px;height:14px;border-radius:50%}
 .pl .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}
-.pl .st{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.pl .st{display:block;font-size:12px;font-weight:600;color:var(--muted);white-space:normal}
 .pl .sc{font-variant-numeric:tabular-nums;font-weight:800;display:flex;align-items:center;gap:4px}
 .pl .sc svg{width:16px;height:16px;color:var(--h5)}
 .pl.off{opacity:.5}
@@ -61,14 +61,51 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;fl
 .slot.sixth{border-color:rgba(255,106,92,.55);display:grid;place-items:center;color:var(--danger);font-family:var(--display);font-size:calc(var(--cw)*.36)}
 .rowinfo{margin-left:auto;flex:0 0 auto;display:flex;align-items:center;gap:4px;font-weight:800;color:var(--muted);padding-left:6px;font-variant-numeric:tabular-nums}
 .rowinfo svg{width:16px;height:16px}
-.card{flex:0 0 var(--cw);width:var(--cw);height:calc(var(--cw)*1.42);border-radius:9px;background:var(--paper);color:var(--ink);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 0 rgba(0,0,0,.35);user-select:none;overflow:hidden}
-.card .band{position:absolute;inset:0 0 auto 0;height:28%;display:flex;align-items:center;justify-content:center;gap:1px;flex-wrap:wrap;padding:2px}
-.card .band svg{width:calc(var(--cw)*.2);height:calc(var(--cw)*.2);color:var(--ink);opacity:.8}
-.card .num{font-family:var(--display);font-size:calc(var(--cw)*.46);margin-top:18%;line-height:1}
-.card .corner{position:absolute;bottom:4px;right:6px;font-size:calc(var(--cw)*.17);font-weight:800;opacity:.55}
-.card[data-h="1"] .band{background:var(--h1)} .card[data-h="2"] .band{background:var(--h2)} .card[data-h="3"] .band{background:var(--h3)} .card[data-h="5"] .band{background:var(--h5)} .card[data-h="7"] .band{background:var(--h7)}
-.card[data-h="5"]{box-shadow:0 3px 0 rgba(0,0,0,.35), inset 0 0 0 3px var(--h5)}
-.card[data-h="7"]{box-shadow:0 3px 0 rgba(0,0,0,.35), inset 0 0 0 3px var(--h7)}
+.card{--fr:#36c08e;--fr-d:#156e4d;--fc:#e8fbf2;flex:0 0 var(--cw);width:var(--cw);height:calc(var(--cw)*1.42);border-radius:calc(var(--cw)*.15);position:relative;user-select:none;overflow:hidden;
+  background:linear-gradient(155deg,var(--fr) 0%,var(--fr-d) 100%);box-shadow:0 3px 0 rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.25)}
+.card .face{position:absolute;inset:calc(var(--cw)*.065);border-radius:calc(var(--cw)*.1);
+  background:radial-gradient(circle at 50% 63%, #fff 0 33%, transparent 34%),
+    radial-gradient(color-mix(in srgb, var(--fr) 35%, transparent) 1.3px, transparent 1.6px) 0 0/calc(var(--cw)*.15) calc(var(--cw)*.15),
+    linear-gradient(180deg,var(--fc),#fff)}
+.card .band{position:absolute;top:calc(var(--cw)*.12);left:50%;transform:translateX(-50%);display:flex;gap:1px;padding:2px 6px;border-radius:999px;background:var(--fr-d);color:#fff;z-index:1;max-width:88%;flex-wrap:nowrap;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.card .band svg{flex:0 0 auto;width:min(calc(var(--cw)*.17), calc(var(--cw)*.66 / var(--n)));height:min(calc(var(--cw)*.17), calc(var(--cw)*.66 / var(--n)))}
+.card .num{position:absolute;left:0;right:0;top:36%;height:54%;display:grid;place-items:center;font-family:var(--display);font-size:calc(var(--cw)*.44);line-height:1;color:var(--fr-d);text-shadow:0 2px 0 color-mix(in srgb, var(--fr) 40%, #fff);z-index:1}
+.card .corner{position:absolute;bottom:calc(var(--cw)*.1);right:calc(var(--cw)*.13);font-size:calc(var(--cw)*.15);font-weight:800;color:var(--fr-d);opacity:.75;z-index:1}
+.card .corner.l{right:auto;left:calc(var(--cw)*.13)}
+.card[data-h="2"]{--fr:#3d9bff;--fr-d:#1652b0;--fc:#e4f0ff}
+.card[data-h="3"]{--fr:#ffb21c;--fr-d:#9a5800;--fc:#fff3d1}
+.card[data-h="5"]{--fr:#ff4d6a;--fr-d:#a3122c;--fc:#ffe3e8}
+.card[data-h="7"]{--fr:#a05cff;--fr-d:#4a17ad;--fc:#f0e6ff}
+.card[data-h="7"]::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.6) 48%,transparent 60%);background-size:260% 100%;animation:shine 2.8s linear infinite;pointer-events:none;z-index:2}
+@keyframes shine{from{background-position:140% 0}to{background-position:-120% 0}}
+.hand .card{--cw:clamp(48px,7.2vw,76px)}
+.rowtag{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:16px;background:var(--rc);color:#10201c;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.row{border-left:4px solid var(--rc)!important;background:linear-gradient(90deg, color-mix(in srgb, var(--rc) 16%, transparent), rgba(0,0,0,.18) 40%)}
+/* scores */
+.pl{row-gap:6px}
+.pl .bar{grid-column:1/-1;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.pl .bar i{display:block;height:100%;border-radius:inherit;background:var(--bc);transition:width .7s ease}
+.pl .sc{font-family:var(--display);font-size:24px;font-weight:400;line-height:1;flex-direction:column;align-items:flex-end;gap:2px}
+.pl .sc small{font-family:var(--body);font-size:11px;font-weight:800;color:var(--sun)}
+.pl.danger{box-shadow:inset 0 0 0 2px var(--danger);animation:risk 1.6s ease-in-out infinite}
+@keyframes risk{50%{background:rgba(255,106,92,.16)}}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:2px;text-transform:uppercase;letter-spacing:.05em}
+.tag.lead{background:#5fd38a;color:#06361b}.tag.risk{background:var(--danger);color:#3a0500}
+.mbar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;min-width:60px}.mbar i{display:block;height:100%;background:var(--bc)}
+/* chat */
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.shell.nochat{grid-template-columns:minmax(0,1fr)}
+.chat{position:sticky;top:14px;display:flex;flex-direction:column;height:calc(100vh - 120px);min-height:380px}
+.chat h2{display:flex;align-items:center;gap:8px}
+.chatlog{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-right:4px}
+.msg{background:rgba(255,255,255,.06);border-radius:12px;padding:6px 10px;line-height:1.4;overflow-wrap:anywhere;border-left:3px solid var(--mc)}
+.msg b{color:var(--mc);margin-right:4px}
+.msg.mine{background:rgba(255,178,46,.13)}
+.msg.sys{background:none;border:0;color:var(--muted);font-size:12px;text-align:center;padding:2px 4px}
+.chatform{display:flex;gap:6px;margin-top:8px}.chatform input{flex:1}
+.quick{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.quick button{padding:4px 9px;font-size:14px;background:rgba(255,255,255,.08);color:var(--text);box-shadow:none;border-radius:999px}
+@media (max-width:1100px){.shell{grid-template-columns:minmax(0,1fr)}.chat{position:static;height:380px}}
 .card.new{animation:drop .45s cubic-bezier(.2,1.4,.4,1)}
 @keyframes drop{from{transform:translateY(-30px) scale(1.15) rotate(-6deg);opacity:0}}
 .reveal{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;min-height:20px}
@@ -123,7 +160,15 @@ td.n,th.n{text-align:right}
     <div class="logo"><svg aria-hidden="true"><use href="#bull"/></svg><div>Sixième Bœuf<small>Ne posez pas la sixième carte</small></div></div>
     <div class="status" id="status">Connexion…</div>
   </header>
-  <main id="app"><div class="panel center"><p class="note">Connexion à la table…</p></div></main>
+  <div class="shell nochat" id="shell">
+    <main id="app" style="min-width:0"><div class="panel center"><p class="note">Connexion à la table…</p></div></main>
+    <aside class="panel chat" id="chat" hidden aria-label="Discussion">
+      <h2>Discussion</h2>
+      <div class="chatlog" id="chatlog" aria-live="polite"></div>
+      <div class="quick" id="quick"><button type="button" data-quick="😂">😂</button><button type="button" data-quick="😱">😱</button><button type="button" data-quick="🐂">🐂</button><button type="button" data-quick="👏">👏</button><button type="button" data-quick="🔥">🔥</button><button type="button" data-quick="😭">😭</button><button type="button" data-quick="GG">GG</button><button type="button" data-quick="Bien joué !">Bien joué !</button></div>
+      <form class="chatform" id="chatform"><input id="chatin" maxlength="300" placeholder="Écrire un message…" autocomplete="off" aria-label="Message"><button type="submit">Envoyer</button></form>
+    </aside>
+  </div>
 </div>
 <div id="overlay"></div>
 <div id="toast"></div>
@@ -140,7 +185,28 @@ const store = { get(k){ try { return localStorage.getItem(k); } catch { return n
 let code = (new URLSearchParams(location.search).get("room") || "").toUpperCase().replace(/[^A-Z0-9]/g,"");
 let ws=null, S=null, view="connecting", errMsg="", retry=0, deadlineAt=0;
 let myName = store.get("sb-name") || "", myColor = store.get("sb-color") || COLORS[Math.floor(Math.random()*COLORS.length)];
-let selCard=null, seenCards=new Set(), lastSeq=-1, pending=false, flipKey="";
+let selCard=null, seenCards=new Set(), lastSeq=-1, pending=false, flipKey="", myId=null;
+const ROWCOLORS=["#ff7b54","#46c2ff","#c08bff","#5fd38a","#ffd23f","#ff6fb5"];
+
+/* ---------------- chat ---------------- */
+function msgEl(m){
+  const d=document.createElement("div");
+  if (m.sys){ d.className="msg sys"; d.textContent=m.text; return d; }
+  d.className="msg"+(m.id===myId?" mine":"");
+  d.style.setProperty("--mc", /^#[0-9a-fA-F]{6}$/.test(m.color)?m.color:"#ffb22e");
+  const b=document.createElement("b"); b.textContent=m.name;
+  d.append(b, document.createTextNode(m.text));
+  return d;
+}
+function appendMsg(m, force){
+  const log=$("chatlog"), near=log.scrollHeight-log.scrollTop-log.clientHeight<60;
+  log.append(msgEl(m));
+  while (log.children.length>150) log.firstChild.remove();
+  if (near || force || m.id===myId) log.scrollTop=log.scrollHeight;
+}
+$("chatform").onsubmit=e=>{ e.preventDefault(); const i=$("chatin"), t=i.value.trim(); if(!t) return; send({t:"chat", text:t}); i.value=""; };
+document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>send({t:"chat", text:b.dataset.quick}));
+function bandColor(pct){ return `hsl(${Math.round(130*(1-Math.min(1,pct)))} 80% 52%)`; }
 
 /* ---------------- connection ---------------- */
 function connect(){
@@ -162,7 +228,9 @@ function connect(){
 }
 function send(m){ if (ws && ws.readyState===1) ws.send(JSON.stringify(m)); else toast("Connexion perdue, nouvelle tentative…"); }
 function onMsg(m){
-  if (m.t==="joined"){ code=m.room; store.set("sb-token-"+code, m.token); history.replaceState(null,"","?room="+code); return; }
+  if (m.t==="chatlog"){ $("chatlog").innerHTML=""; (m.list||[]).forEach(x=>appendMsg(x)); $("chatlog").scrollTop=1e9; return; }
+  if (m.t==="chat"){ appendMsg(m.msg); return; }
+  if (m.t==="joined"){ myId=m.you; code=m.room; store.set("sb-token-"+code, m.token); history.replaceState(null,"","?room="+code); return; }
   if (m.t==="need_name"){ code=m.room; view="join"; render(); return; }
   if (m.t==="error"){ view="error"; errMsg=m.msg; render(); return; }
   if (m.t==="toast"){ toast(esc(m.msg)); return; }
@@ -176,7 +244,7 @@ function onMsg(m){
 /* ---------------- helpers ---------------- */
 function cardHTML(n, extra="", attrs=""){
   const h = heads(n);
-  return `<div class="card ${extra}" data-h="${h}" ${attrs} aria-label="Carte ${n}, ${h} tête${h>1?"s":""}"><div class="band">${bull.repeat(h)}</div><div class="num">${n}</div><div class="corner">${n}</div></div>`;
+  return `<div class="card ${extra}" data-h="${h}" ${attrs} aria-label="Carte ${n}, ${h} tête${h>1?"s":""}"><div class="face"></div><div class="band" style="--n:${h}">${bull.repeat(h)}</div><div class="num">${n}</div><div class="corner l">${n}</div><div class="corner">${n}</div></div>`;
 }
 const playerById = id => S?.players?.find(p=>p.id===id);
 const pname = id => playerById(id)?.name ?? "?";
@@ -192,6 +260,7 @@ function readName(){ const v=$("nm").value.trim().slice(0,20); if(!v){ $("nm").f
 function render(){
   const a=document.activeElement, keep = a && a.id && a.tagName==="INPUT" ? {id:a.id, v:a.value, s:a.selectionStart} : null;
   renderInner();
+  const showChat = view==="table"; $("chat").hidden=!showChat; $("shell").classList.toggle("nochat", !showChat);
   if (keep){ const el=$(keep.id); if (el && !el.disabled){ el.value=keep.v; el.focus(); try{ el.setSelectionRange(keep.s,keep.s); }catch{} } }
 }
 function renderInner(){
@@ -291,19 +360,30 @@ function renderGame(){
     return `${p.pile} carte${p.pile>1?"s":""} ramassée${p.pile>1?"s":""}`;
   };
   const players=[...S.players].sort((a,b)=>(a.total+a.round)-(b.total+b.round));
+  const playerRow = (p, all) => {
+    const sc=p.total+p.round, pct=sc/s.threshold, left=Math.max(0,s.threshold-sc);
+    const minSc=Math.min(...all.map(x=>x.total+x.round)), maxSc=Math.max(...all.map(x=>x.total+x.round));
+    const lead = sc===minSc && maxSc>minSc, risk = pct>=0.75 || (sc===maxSc && maxSc>minSc && pct>=0.5);
+    return `<li class="pl ${p.id===S.you?"me":""} ${p.online?"":"off"} ${pct>=0.75?"danger":""}"><span class="dot" style="background:${esc(p.color)}"></span>
+      <span class="nm">${esc(p.name)}${p.id===S.you?" (vous)":""}${lead?`<span class="tag lead">En tête</span>`:""}${risk?`<span class="tag risk">Danger</span>`:""}
+      <span class="st">${p.online?statusOf(p):"Déconnecté"} · ${left>0?`encore ${left} avant ${s.threshold}`:"seuil atteint"}</span></span>
+      <span class="sc" title="Total, dont la manche en cours">${sc}${p.round?`<small>+${p.round} cette manche</small>`:""}</span>
+      <span class="bar" aria-hidden="true"><i style="width:${Math.min(100,pct*100).toFixed(1)}%;--bc:${bandColor(pct)}"></i></span></li>`;
+  };
   const fk=`${S.round}-${S.turn}`, flipNow = S.phase==="reveal" && fk!==flipKey; if(S.phase==="reveal"||S.phase==="pickRow") flipKey=fk;
   const choosingRow = S.phase==="pickRow" && S.waiting===S.you;
   const rowsHTML = S.rows.map((r,i)=>{
     const tot=r.reduce((a,c)=>a+heads(c),0);
     const cards=r.map(c=>cardHTML(c, seenCards.has(c)?"":"new")).join("");
-    return `<div class="row ${choosingRow?"choosable":""}" ${choosingRow?`role="button" tabindex="0" data-row="${i}" aria-label="Ramasser la rangée ${i+1} (${tot} têtes)"`:""}>${cards}${'<div class="slot"></div>'.repeat(Math.max(0,s.rowMax-r.length))}<div class="slot sixth" title="Celui qui pose ici ramasse la rangée">${s.rowMax+1}</div><div class="rowinfo">${tot} ${bull}</div></div>`;
+    return `<div class="row ${choosingRow?"choosable":""}" style="--rc:${ROWCOLORS[i%ROWCOLORS.length]}" ${choosingRow?`role="button" tabindex="0" data-row="${i}" aria-label="Ramasser la rangée ${String.fromCharCode(65+i)} (${tot} têtes)"`:""}><div class="rowtag">${String.fromCharCode(65+i)}</div>${cards}${'<div class="slot"></div>'.repeat(Math.max(0,s.rowMax-r.length))}<div class="slot sixth" title="Celui qui pose ici ramasse la rangée">${s.rowMax+1}</div><div class="rowinfo">${tot} ${bull}</div></div>`;
   }).join("");
   let handHTML;
   if (mine){
-    const hand=S.hand, canPick=S.phase==="choose" && S.myPick==null && !pending;
+    const hand=S.hand, canPick=S.phase==="choose" && S.myPick==null && !pending && !S.autoLast;
     if (selCard!=null && !hand.includes(selCard)) selCard=null;
     handHTML = `<section class="panel"><div class="handbar">
       ${canPick?`<p class="hint">${selCard==null?"Cliquez une carte pour la choisir (double-clic pour la jouer directement)":`Carte ${selCard} sélectionnée`}</p><button id="playBtn" ${selCard==null?"disabled":""}>Jouer cette carte</button>`
+      : S.phase==="choose"&&S.autoLast?`<p class="hint big" style="color:var(--sun)">Dernière carte : le <b>${S.myPick}</b> est joué automatiquement</p>`
       : S.phase==="choose"?`<p class="hint">Vous avez posé le <b>${S.myPick ?? selCard}</b>. On attend les autres…</p>`
       : choosingRow?`<p class="hint big" style="color:var(--sun)">Votre carte est trop petite ! Cliquez la rangée que vous ramassez.</p>`
       : `<p class="hint">Votre main · ${hand.length} carte${hand.length>1?"s":""}</p>`}
@@ -316,7 +396,7 @@ function renderGame(){
     <p class="note">Un ami qui recharge la page ou perd la connexion retrouve sa place avec ce même lien, sur le même navigateur.</p></section>` : "";
   $("app").innerHTML = `<div class="layout">
     <aside class="stack">
-      <section class="panel"><h2>Joueurs</h2><ul class="players">${players.map(p=>`<li class="pl ${p.id===S.you?"me":""} ${p.online?"":"off"}"><span class="dot" style="background:${esc(p.color)}"></span><span class="nm">${esc(p.name)}${p.id===S.you?" (vous)":""}<span class="st">${p.online?statusOf(p):"Déconnecté"}</span></span><span class="sc" title="Total (dont manche en cours)">${p.total+p.round}${bull}</span></li>`).join("")}</ul>
+      <section class="panel"><h2>Scores</h2><ul class="players">${players.map(p=>playerRow(p, players)).join("")}</ul>
       <p class="note" style="margin-top:10px">Fin à ${s.threshold} têtes · le moins de têtes gagne.${S.spectators?` · ${S.spectators} spectateur${S.spectators>1?"s":""}`:""}</p></section>
       ${hostTools}
     </aside>
@@ -351,8 +431,8 @@ function renderOverlay(){
   const ranked=[...S.players].sort((a,b)=>a.total-b.total), over=S.phase==="over", host=isHost();
   o.innerHTML = `<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
     <h2 id="mt">${over?`${esc(ranked[0].name)} gagne !`:`Fin de la manche ${S.round}`}</h2>
-    <table><thead><tr><th>#</th><th>Joueur</th><th class="n">Manche</th><th class="n">Total</th></tr></thead><tbody>
-    ${ranked.map((p,i)=>`<tr><td>${i+1}</td><td><span style="color:${esc(p.color)}">●</span> ${esc(p.name)}${p.id===S.you?" (vous)":""}</td><td class="n">+${p.lastRound}</td><td class="n"><b>${p.total}</b></td></tr>`).join("")}
+    <table><thead><tr><th>#</th><th>Joueur</th><th class="n">Manche</th><th class="n">Total</th><th>Vers ${S.settings.threshold}</th></tr></thead><tbody>
+    ${ranked.map((p,i)=>`<tr><td>${i+1}</td><td><span style="color:${esc(p.color)}">●</span> ${esc(p.name)}${p.id===S.you?" (vous)":""}</td><td class="n">+${p.lastRound}</td><td class="n"><b>${p.total}</b></td><td><div class="mbar"><i style="width:${Math.min(100,p.total/S.settings.threshold*100).toFixed(1)}%;--bc:${bandColor(p.total/S.settings.threshold)}"></i></div></td></tr>`).join("")}
     </tbody></table>
     <p class="note" style="text-align:center">${over?`Le joueur avec le moins de têtes l'emporte.`:`Partie jusqu'à ${S.settings.threshold} têtes.`}</p>
     ${host?`<div class="inline" style="justify-content:center">${over?`<button id="againBtn">Nouvelle partie</button>`:`<button id="nextBtn">Manche suivante</button><button class="ghost" id="stopBtn">Arrêter là</button>`}</div>`:`<p class="hint">L'hôte lance la suite…</p>`}

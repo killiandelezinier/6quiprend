@@ -48,7 +48,7 @@ function createRoom() {
     code: newCode(), hostId: null, settings: { ...DEFAULTS }, phase: "lobby",
     members: new Map(), // id -> {id, token, name, color, sockets:Set}
     players: [], hands: {}, rows: [], locked: {}, reveal: [], step: 0, waiting: null,
-    deadline: 0, round: 0, turn: 0, ev: null, seq: 0, timer: null, lastActive: Date.now(),
+    deadline: 0, round: 0, turn: 0, ev: null, seq: 0, timer: null, lastActive: Date.now(), chat: [],
   };
   rooms.set(room.code, room);
   return room;
@@ -70,7 +70,7 @@ function viewFor(room, id) {
     myPick: room.locked[id] ?? null,
     rows: room.rows, reveal: room.reveal.slice(room.step), waiting: room.waiting,
     deadlineIn: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
-    round: room.round, turn: room.turn, ev: room.ev,
+    round: room.round, turn: room.turn, ev: room.ev, autoLast: !!room.autoLast,
     spectators: members.filter(m => !playerOf(room, m.id) && online(room, m.id) && room.phase !== "lobby").length,
   };
 }
@@ -84,6 +84,17 @@ function broadcast(room) {
   }
 }
 
+/* ---------------- Chat ---------------- */
+const CHAT_KEEP = 150;
+function pushChat(room, entry) {
+  entry.at = Date.now();
+  room.chat.push(entry);
+  if (room.chat.length > CHAT_KEEP) room.chat.splice(0, room.chat.length - CHAT_KEEP);
+  for (const m of room.members.values()) for (const ws of m.sockets) send(ws, { t: "chat", msg: entry });
+}
+const sys = (room, text) => pushChat(room, { sys: true, text });
+const cleanText = s => String(s || "").replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, 300);
+
 /* ---------------- Engine ---------------- */
 const delay = (room, ms) => ms / (room.settings.speed || 1);
 function schedule(room, fn, ms) { clearTimeout(room.timer); room.timer = setTimeout(() => { fn(); }, Math.max(0, ms)); }
@@ -96,6 +107,7 @@ function startGame(room) {
   room.players = seated.map(m => ({ id: m.id, name: m.name, color: m.color, total: 0, round: 0, pile: 0, lastRound: 0 }));
   room.round = 0; room.ev = null;
   deal(room);
+  sys(room, `La partie commence ! Fin à ${s.threshold} têtes.`);
   return null;
 }
 function deal(room) {
@@ -112,9 +124,15 @@ function beginTurn(room) {
   room.phase = "choose"; room.locked = {}; room.reveal = []; room.step = 0; room.waiting = null;
   room.deadline = room.settings.turnTime ? Date.now() + room.settings.turnTime * 1000 : 0;
   if (room.deadline) schedule(room, () => autoPick(room), room.deadline - Date.now()); else clearTimeout(room.timer);
+  // Dernière carte : aucun choix possible, on la joue pour tout le monde.
+  if (room.players.every(p => (room.hands[p.id] || []).length === 1)) {
+    for (const p of room.players) room.locked[p.id] = room.hands[p.id][0];
+    room.deadline = 0; room.autoLast = true;
+    schedule(room, () => startReveal(room), delay(room, 1400));
+  } else room.autoLast = false;
 }
 function maybeReveal(room) {
-  if (room.phase === "choose" && room.players.every(p => room.locked[p.id] != null)) schedule(room, () => startReveal(room), 500);
+  if (room.phase === "choose" && !room.autoLast && room.players.every(p => room.locked[p.id] != null)) schedule(room, () => startReveal(room), 500);
 }
 function autoPick(room) {
   if (room.phase !== "choose") return;
@@ -135,6 +153,7 @@ function take(room, id, ri, c) {
   const taken = room.rows[ri], h = rowHeads(taken), p = playerOf(room, id);
   p.round += h; p.pile += taken.length; room.rows[ri] = [c];
   room.ev = { type: "take", id, h, n: taken.length, seq: ++room.seq };
+  sys(room, `${p.name} ramasse ${taken.length} carte${taken.length > 1 ? "s" : ""} (${h} tête${h > 1 ? "s" : ""}) · total ${p.total + p.round}/${room.settings.threshold}`);
 }
 function step(room) {
   if (room.phase !== "reveal") return;
@@ -171,6 +190,8 @@ function endTurn(room) {
   if (room.players.every(p => (room.hands[p.id] || []).length === 0)) {
     for (const p of room.players) { p.total += p.round; p.lastRound = p.round; p.round = 0; }
     room.phase = room.players.some(p => p.total >= room.settings.threshold) ? "over" : "roundEnd";
+    if (room.phase === "over") { const w = [...room.players].sort((a, b) => a.total - b.total)[0]; sys(room, `Partie terminée : ${w.name} gagne avec ${w.total} têtes !`); }
+    else sys(room, `Fin de la manche ${room.round}.`);
     room.deadline = 0; clearTimeout(room.timer);
     return broadcast(room);
   }
@@ -206,6 +227,7 @@ function handle(ws, msg) {
     if (msg.name) { m.name = cleanName(msg.name) || m.name; m.color = cleanColor(msg.color || m.color); }
     ws.room = room.code; ws.member = m.id; m.sockets.add(ws);
     send(ws, { t: "joined", room: room.code, token: m.token, you: m.id });
+    send(ws, { t: "chatlog", list: room.chat });
     return broadcast(room);
   }
   const room = rooms.get(ws.room); if (!room) return;
@@ -218,6 +240,11 @@ function handle(ws, msg) {
       if (room.phase === "lobby") m.seated = msg.seated !== false;
       if (p) { p.name = m.name; p.color = m.color; }
       return broadcast(room);
+    }
+    case "chat": {
+      const text = cleanText(msg.text); if (!text) return;
+      const now = Date.now(); if (now - (m.lastChat || 0) < 400) return; m.lastChat = now;
+      return pushChat(room, { id: m.id, name: m.name, color: m.color, text });
     }
     case "settings": {
       if (!isHost || room.phase !== "lobby") return;
@@ -262,7 +289,7 @@ function handle(ws, msg) {
 }
 
 /* ---------------- WebSocket ---------------- */
-const wss = new WebSocketServer({ server, maxPayload: 8 * 1024 });
+const wss = new WebSocketServer({ server, maxPayload: 16 * 1024 });
 wss.on("connection", ws => {
   ws.isAlive = true;
   ws.on("pong", () => { ws.isAlive = true; });
