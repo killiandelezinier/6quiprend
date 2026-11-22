@@ -3,7 +3,7 @@
 Plateforme de jeux multijoueur en temps réel, chacun sur son ordinateur ou son téléphone.
 Aucun compte n'est nécessaire : on choisit un jeu dans le menu, l'hôte crée une table et envoie le lien à ses amis.
 
-Jeux disponibles : **Sixième Bœuf** (2 à 10 joueurs). En préparation : Coinche, Bridge.
+Jeux disponibles : **Sixième Bœuf** (2 à 10 joueurs) et **Coinche** (4 joueurs). En préparation : Bridge.
 
 ## Contenu
 

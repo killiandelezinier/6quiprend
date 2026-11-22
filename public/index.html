@@ -147,11 +147,12 @@ button.gtile:hover{transform:translateY(-3px);border-color:var(--ga)}
 window.TV = { games: {}, order: [], register(g){ this.games[g.id]=g; this.order.push(g.id); if(g.css){ const st=document.createElement("style"); st.textContent=g.css; document.head.append(st); } } };
 /* Jeux annoncés mais pas encore jouables. */
 TV.soon = [
-  { id:"coinche", name:"Coinche", tagline:"La belote contrée : enchères, coinche et surcoinche, en équipes de deux.", players:"4 joueurs", accent:"#ff5470", preview:()=>`<div class="suits"><span class="b">♠</span><span class="r">♥</span><span class="r">♦</span><span class="b">♣</span></div>` },
+
   { id:"bridge", name:"Bridge", tagline:"Enchères, contrat et mort : le grand classique des jeux de levées.", players:"4 joueurs", accent:"#4fb3ff", preview:()=>`<div class="suits"><span class="b">♣</span><span class="r">♦</span><span class="r">♥</span><span class="b">♠</span></div>` },
 ];
 </script>
 <script src="/games/sixieme.js"></script>
+<script src="/games/coinche.js"></script>
 <script>
 (() => {
 const COLORS = ["#ffb22e","#4fc3f7","#ff6a5c","#7be08a","#c7a5ff","#ff8ad8","#f5e663","#5fe0d0","#ffffff","#ff9a4d"];

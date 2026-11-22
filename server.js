@@ -79,6 +79,7 @@ function viewFor(room, id) {
   return {
     code: room.code, game: room.game.id, you: id, hostId: room.hostId, settings: room.settings, phase: room.phase,
     lobby: seatedMembers(room).map(m => ({ id: m.id, name: m.name, color: m.color, online: online(room, m.id) })),
+    lobbyx: !playing && room.game.lobbyView ? room.game.lobbyView(room, id, seatedMembers(room)) : null,
     g: playing ? room.game.view(room, id, ctxFor(room, room.members.get(id))) : null,
     spectators: playing ? members.filter(m => !room.game.isPlayer(room, m.id) && online(room, m.id)).length : 0,
   };
@@ -199,6 +200,7 @@ function handle(ws, msg) {
     }
     default:
       if (room.phase === "playing" && room.g) return room.game.action(room, m, msg, ctx);
+      if (room.phase === "lobby" && room.game.lobbyAction) { room.game.lobbyAction(room, m, msg, ctx, seatedMembers(room)); return broadcast(room); }
   }
 }
 
